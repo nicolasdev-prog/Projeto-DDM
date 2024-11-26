@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Sua Loja de Eletrônicos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+        }
+
+        /* Menu Styles */
+        .menu {
+            background-color: #1a237e;
+            padding: 0.5rem 0;
+        }
+
+        .menu ul {
+            max-width: 1200px;
+            margin: 0 auto;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #283593;
+        }
+
+        nav {
+            background-color: #2c3e50;
+            padding: 1rem;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .logo i {
+            color: #3498db;
+        }
+
+        .cart-icon {
+            cursor: pointer;
+            position: relative;
+            padding: 10px 20px;
+            background-color: #34495e;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cart-icon:hover {
+            background-color: #465c71;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Produtos e Grid */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .category-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin: 2rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .category-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #3498db;
+            margin: 0.5rem auto;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background-color: #f8f9fa;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 4rem;
+        }
+
+        .product-title {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            height: 40px;
+        }
+
+        .price {
+            color: #27ae60;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .add-to-cart-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .added {
+            background-color: #27ae60;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 12px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .success-modal {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-modal h2 {
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        .success-modal .success-icon {
+            font-size: 4rem;
+            color: #27ae60;
+            margin: 1rem 0;
+        }
+
+        .success-modal p {
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #7f8c8d;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #34495e;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+            margin: 0 1rem;
+        }
+
+        .remove-item {
+            color: #e74c3c;
+            cursor: pointer;
+            padding: 5px 10px;
+            border: none;
+            background: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .remove-item:hover {
+            color: #c0392b;
+        }
+
+        .cart-total {
+            margin-top: 1rem;
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+
+        .checkout-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background-color: #219a52;
+        }
+
+        @media (max-width: 768px) {
+            .menu ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .modal-content {
+                margin: 1rem;
+                max-height: 90vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <ul>
+            <li><a href="#smartphones">Smartphones</a></li>
+            <li><a href="#acessorios">Acessórios</a></li>
+            <li><a href="#notebooks">Notebooks</a></li>
+            <li><a href="#tablets">Tablets</a></li>
+        </ul>
+    </div>
+
+    <nav>
+        <div class="nav-content">
+            <div class="logo">
+                <span>🛍️ TechStore</span>
+            </div>
+            <div class="cart-icon" onclick="toggleCart()">
+                🛒 Carrinho <span class="cart-count">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <h2 class="category-title" id="smartphones">Smartphones</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">📱</div>
+                <h3 class="product-title">iPhone 14 Pro</h3>
+                <p class="product-description">256GB, 6GB RAM, Tela 6.1"</p>
+                <p class="price">R$ 7.999,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('iPhone 14 Pro', 7999.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">📱</div>
+                <h3 class="product-title">Galaxy S23 Ultra</h3>
+                <p class="product-description">512GB, 12GB RAM, Tela 6.8"</p>
+                <p class="price">R$ 6.999,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('Galaxy S23 Ultra', 6999.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">📱</div>
+                <h3 class="product-title">Xiaomi 13 Pro</h3>
+                <p class="product-description">256GB, 8GB RAM, Tela 6.7"</p>
+                <p class="price">R$ 4.999,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('Xiaomi 13 Pro', 4999.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+        </div>
+
+        <h2 class="category-title" id="acessorios">Acessórios</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">🎧</div>
+                <h3 class="product-title">AirPods Pro</h3>
+                <p class="product-description">Cancelamento de ruído ativo</p>
+                <p class="price">R$ 1.899,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('AirPods Pro', 1899.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">⌚</div>
+                <h3 class="product-title">Apple Watch Series 8</h3>
+                <p class="product-description">GPS + Cellular, 45mm</p>
+                <p class="price">R$ 4.499,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('Apple Watch Series 8', 4499.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🔋</div>
+                <h3 class="product-title">Carregador 65W</h3>
+                <p class="product-description">Carregamento ultra rápido</p>
+                <p class="price">R$ 299,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('Carregador 65W', 299.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+        </div>
+
+        <h2 class="category-title" id="notebooks">Notebooks</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">💻</div>
+                <h3 class="product-title">MacBook Pro M2</h3>
+                <p class="product-description">512GB SSD, 16GB RAM</p>
+                <p class="price">R$ 12.999,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('MacBook Pro M2', 12999.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">💻</div>
+                <h3 class="product-title">Dell XPS 13</h3>
+                <p class="product-description">1TB SSD, 32GB RAM</p>
+                <p class="price">R$ 9.999,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('Dell XPS 13', 9999.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">💻</div>
+                <h3 class="product-title">Legion Pro 7</h3>
+                <p class="product-description">2TB SSD, 32GB RAM, RTX 4090</p>
+                <p class="price">R$ 15.999,00</p>
+                <button class="add-to-cart-btn" onclick="addToCart('Legion Pro 7', 15999.00, this)">
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal do Carrinho -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleCart()">×</span>
+            <h2>Seu Carrinho</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                Total: R$ <span id="cart-total">0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Finalizar Compra</button>
+        </div>
+    </div>
+
+    <!-- Modal de Sucesso -->
+    <div class="modal" id="successModal">
+        <div class="modal-content success-modal">
+            <span class="close-modal" onclick="closeSuccessModal()">×</span>
+            <div class="success-icon">✅</div>
+            <h2>Compra Finalizada com Sucesso!</h2>
+            <p>Obrigado por comprar conosco!</p>
+            <button class="checkout-btn" onclick="closeSuccessModal()">Continuar Comprando</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let cartTotal = 0;
+
+        function addToCart(name, price, button) {
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name: name,
+                    price: price,
+                    quantity: 1
+                });
+            }
+
+            updateCartCount();
+            updateCartTotal();
+            
+            button.classList.add('added');
+            button.textContent = "✓ Adicionado";
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartCount();
+            updateCartTotal();
+            updateCartDisplay();
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelector('.cart-count').textContent = totalItems;
+        }
+
+        function updateCartTotal() {
+            cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+
+            cart.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p>R$ ${item.price.toFixed(2)} x ${item.quantity}</p>
+                    </div>
+                    <button class="remove-item" onclick="removeFromCart(${index})">Remover</button>
+                `;
+                cartItems.appendChild(itemElement);
+            });
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+            updateCartDisplay();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Seu carrinho está vazio!');
+                return;
+            }
+            
+            document.getElementById('cartModal').style.display = 'none';
+            document.getElementById('successModal').style.display = 'block';
+            
+            cart = [];
+            updateCartCount();
+            updateCartTotal();
+            
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.classList.remove('added');
+                button.textContent = "Adicionar ao Carrinho";
+            });
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        // Inicialização
+        document.getElementById('cartModal').style.display = 'none';
+        document.getElementById('successModal').style.display = 'none';
+
+        // Smooth scroll para as categorias
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
